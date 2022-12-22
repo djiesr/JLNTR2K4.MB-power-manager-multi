@@ -1,15 +1,10 @@
-# These substitutions allow the end user to override certain values
 substitutions:
   name: "power-manager-multi"
 
 esphome:
   name: "${name}"
-  # Automatically add the mac address to the name
-  # so you can use a single firmware for all devices
   name_add_mac_suffix: true
 
-  # This will allow for (future) project identification,
-  # configuration and updates.
   project:
     name: esphome.power-manager-multi
     version: "1.0"
@@ -19,42 +14,24 @@ esp32:
   framework:
     type: arduino
 
-# To be able to get logs from the device via serial and api.
 logger:
 
-# API is a requirement of the dashboard import.
 api:
 
-# OTA is required for Over-the-Air updating
 ota:
 
-# This should point to the public location of this yaml file.
 dashboard_import:
   package_import_url: github://djiesr/JLNTR2K4.MB-power-manager-multi/blob/main/project-template-esp32.yaml@main
 
 wifi:
-  # Set up a wifi access point using the device name above
   ap:
     password: "12345678"
 
-# In combination with the `ap` this allows the user
-# to provision wifi credentials to the device.
 captive_portal:
 
-##########################################################
-# Most projects should not remove anything from above here
-# and should just modify the name, project name/version 
-# and git url for the dashboard_import
-##########################################################
-
-
-# Sets up Bluetooth LE (Only on ESP32) to allow the user
-# to provision wifi credentials to the device.
 esp32_improv:
   authorizer: none
 
-# Sets up the improv via serial client for Wi-Fi provisioning.
-# Handy if your device has a usb port for the user to add credentials when they first get it.
 improv_serial:
 
 web_server:
@@ -66,8 +43,8 @@ spi:
   mosi_pin: D7
   miso_pin: D6
 
+# List of GPIO for multiboard
 mcp3008:
-
   - cs_pin: GPIO13
     id: main_board_1
   - cs_pin: GPIO15
@@ -101,7 +78,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p0
@@ -138,7 +115,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p1
@@ -175,7 +152,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p2
@@ -212,7 +189,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p0
@@ -249,7 +226,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p4
@@ -286,7 +263,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p5
@@ -323,7 +300,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p0
@@ -360,7 +337,7 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.000 -> 0
-          - 1 -> 20
+          - 1 -> 20 #Default value, change it with the value of your clamp OR calibrate it
 
   - platform: template
     id: power_c1_p7
@@ -382,12 +359,7 @@ sensor:
     pin: GPIO34
     id: adc_sensor_board_1
     attenuation: 11dB
-
-  - platform: adc
-    pin: GPIO35
-    id: adc_sensor_board_2
-    attenuation: 11dB
-
+    
   - platform: ct_clamp
     sensor: adc_sensor_board_1
     name: "Measured Current board 1"
@@ -396,20 +368,8 @@ sensor:
     filters:
       - calibrate_linear:
           - 0.0 -> 0.0
-          - 0.005 -> 0.001
-          - 0.39045 -> 8.2
-
-  - platform: ct_clamp
-    sensor: adc_sensor_board_2
-    name: "Measured Current board 2"
-    update_interval: 10s
-    id: measured_current_board_2
-    filters:
-      - calibrate_linear:
-          - 0.0 -> 0.0
-          - 0.005 -> 0.001
-          - 0.39045 -> 8.2
-          
+          - 1 -> 20.0  #Default value, change it with the value of your clamp OR calibrate it
+    
   - platform: template
     id: power_board_1
     name: "PM2 Énergie mesurée Board 1"
@@ -423,6 +383,23 @@ sensor:
     power_id: power_board_1
     restore: true
     id: tde_board_1
+
+##### Clamp on board 2 #####
+
+  - platform: adc
+    pin: GPIO35
+    id: adc_sensor_board_2
+    attenuation: 11dB
+
+  - platform: ct_clamp
+    sensor: adc_sensor_board_2
+    name: "Measured Current board 2"
+    update_interval: 10s
+    id: measured_current_board_2
+    filters:
+      - calibrate_linear:
+          - 0.0 -> 0.0
+          - 1 -> 20.0  #Default value, change it with the value of your clamp OR calibrate it
           
   - platform: template
     id: power_board_2
@@ -437,6 +414,8 @@ sensor:
     power_id: power_board_2
     restore: true
     id: tde_board_2
+
+# Screen
     
 i2c:
   scl: D1
