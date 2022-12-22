@@ -1,6 +1,6 @@
 # These substitutions allow the end user to override certain values
 substitutions:
-  name: "project-template"
+  name: "power-manager-multi"
 
 esphome:
   name: "${name}"
@@ -11,11 +11,11 @@ esphome:
   # This will allow for (future) project identification,
   # configuration and updates.
   project:
-    name: esphome.project-template
+    name: esphome.power-manager-multi
     version: "1.0"
 
 esp32:
-  board: esp32dev
+  board: wemos_d1_mini32
   framework:
     type: arduino
 
@@ -30,7 +30,7 @@ ota:
 
 # This should point to the public location of this yaml file.
 dashboard_import:
-  package_import_url: github://esphome/esphome-project-template/project-template-esp32.yaml@main
+  package_import_url: github://djiesr/JLNTR2K4.MB-power-manager-multi/blob/main/project-template-esp32.yaml@main
 
 wifi:
   # Set up a wifi access point using the device name above
@@ -56,3 +56,424 @@ esp32_improv:
 # Sets up the improv via serial client for Wi-Fi provisioning.
 # Handy if your device has a usb port for the user to add credentials when they first get it.
 improv_serial:
+
+web_server:
+  port: 80
+  version: 2
+
+spi:
+  clk_pin: D5
+  mosi_pin: D7
+  miso_pin: D6
+
+mcp3008:
+
+  - cs_pin: GPIO13
+    id: main_board_1
+  - cs_pin: GPIO15
+    id: main_board_2
+  - cs_pin: D8
+    id: main_board_3
+  - cs_pin: GPIO32
+    id: main_board_4
+  - cs_pin: GPIO33
+    id: main_board_5
+
+sensor:
+###### Circuit 1 Clamp 0 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p0
+    name: MCP3008_1_0
+    number: 0
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p0
+    name: "Clamp 0"
+    update_interval: 15s
+    id: measured_current_c1_p0
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p0
+    name: "Énergie mesurée C1 P0"
+    lambda: return (id(measured_current_c1_p0).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P0"
+    power_id: power_c1_p0
+    restore: true
+    id: tde_c1_p0
+   
+###### Circuit 1 Clamp 1 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p1
+    name: MCP3008_1_1
+    number: 1
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p1
+    name: "Circuit 1 Clamp 0"
+    update_interval: 15s
+    id: measured_current_c1_p1
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p1
+    name: "Énergie mesurée C1 P1"
+    lambda: return (id(measured_current_c1_p1).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P1"
+    power_id: power_c1_p1
+    restore: true
+    id: tde_c1_p1
+
+###### Circuit 1 Clamp 2 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p2
+    name: MCP3008_1_2
+    number: 2
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p2
+    name: "Circuit 1 Clamp 2"
+    update_interval: 15s
+    id: measured_current_c1_p2
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p2
+    name: "Énergie mesurée C1 P2"
+    lambda: return (id(measured_current_c1_p2).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P2"
+    power_id: power_c1_p2
+    restore: true
+    id: tde_c1_p2
+
+###### Circuit 1 Clamp 3 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p3
+    name: MCP3008_1_3
+    number: 3
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p3
+    name: "Circuit 1 Clamp 3"
+    update_interval: 15s
+    id: measured_current_c1_p2
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p0
+    name: "Énergie mesurée C1 P3"
+    lambda: return (id(measured_current_c1_p3).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P3"
+    power_id: power_c1_p3
+    restore: true
+    id: tde_c1_p3
+ 
+###### Circuit 1 Clamp 4 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p4
+    name: MCP3008_1_4
+    number: 4
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p4
+    name: "Circuit 1 Clamp 4"
+    update_interval: 15s
+    id: measured_current_c1_p4
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p4
+    name: "Énergie mesurée C1 P4"
+    lambda: return (id(measured_current_c1_p4).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P4"
+    power_id: power_c1_p4
+    restore: true
+    id: tde_c1_p4
+
+###### Circuit 1 Clamp 5 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p5
+    name: MCP3008_1_5
+    number: 5
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p5
+    name: "Circuit 1 Clamp 5"
+    update_interval: 15s
+    id: measured_current_c1_p5
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p5
+    name: "Énergie mesurée C1 P5"
+    lambda: return (id(measured_current_c1_p5).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P5"
+    power_id: power_c1_p5
+    restore: true
+    id: tde_c1_p5
+    
+###### Circuit 1 Clamp 6 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p6
+    name: MCP3008_1_6
+    number: 6
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p6
+    name: "Circuit 1 Clamp 6"
+    update_interval: 15s
+    id: measured_current_c1_p6
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p0
+    name: "Énergie mesurée C1 P6"
+    lambda: return (id(measured_current_c1_p6).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P6"
+    power_id: power_c1_p6
+    restore: true
+    id: tde_c1_p6
+
+###### Circuit 1 Clamp 7 #####
+  - platform: mcp3008             # Attached to pin 0 of the MCP3008.
+    update_interval: 10s
+    mcp3008_id: main_board_1
+    id: adc_sensor_c1_p7
+    name: MCP3008_1_7
+    number: 7
+    accuracy_decimals: 3
+    internal: true
+    filters:
+      - lambda: return x;
+
+  - platform: ct_clamp
+    sensor: adc_sensor_c1_p7
+    name: "Circuit 1 Clamp 7"
+    update_interval: 15s
+    id: measured_current_c1_p7
+    accuracy_decimals: 3
+    filters:
+      - calibrate_linear:
+          - 0.000 -> 0
+          - 1 -> 20
+
+  - platform: template
+    id: power_c1_p7
+    name: "Énergie mesurée C1 P7"
+    lambda: return (id(measured_current_c1_p7).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "Énergie Total/Jour C1 P7"
+    power_id: power_c1_p7
+    restore: true
+    id: tde_c1_p7
+    
+##### Clamp on board 1 #####
+    
+  - platform: adc
+    pin: GPIO34
+    id: adc_sensor_board_1
+    attenuation: 11dB
+
+  - platform: adc
+    pin: GPIO35
+    id: adc_sensor_board_2
+    attenuation: 11dB
+
+  - platform: ct_clamp
+    sensor: adc_sensor_board_1
+    name: "Measured Current board 1"
+    update_interval: 10s
+    id: measured_current_board_1
+    filters:
+      - calibrate_linear:
+          - 0.0 -> 0.0
+          - 0.005 -> 0.001
+          - 0.39045 -> 8.2
+
+  - platform: ct_clamp
+    sensor: adc_sensor_board_2
+    name: "Measured Current board 2"
+    update_interval: 10s
+    id: measured_current_board_2
+    filters:
+      - calibrate_linear:
+          - 0.0 -> 0.0
+          - 0.005 -> 0.001
+          - 0.39045 -> 8.2
+          
+  - platform: template
+    id: power_board_1
+    name: "PM2 Énergie mesurée Board 1"
+    lambda: return (id(measured_current_board_1).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "PM2 Énergie Total/Jour Board 1"
+    power_id: power_board_1
+    restore: true
+    id: tde_board_1
+          
+  - platform: template
+    id: power_board_2
+    name: "PM2 Énergie mesurée Board 2"
+    lambda: return (id(measured_current_board_2).state * 120 / 1000); #Power = V*I/1000. So change 230V to whatever your mains voltage is)
+    unit_of_measurement: 'kW'
+    update_interval: 15s        #You may change this value (in seconds)
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: "PM2 Énergie Total/Jour Board 2"
+    power_id: power_board_2
+    restore: true
+    id: tde_board_2
+    
+i2c:
+  scl: D1
+  sda: D2
+  scan: false
+
+
+interval:
+  - interval: 5s
+    then:
+      - display.page.show_next: ic2_screen
+      - component.update: ic2_screen
+
+display:
+  - platform: ssd1306_i2c
+    id: ic2_screen
+    model: "SSD1306 128x64"
+    reset_pin: D0
+    address: 0x3C
+    pages:
+      - id: page1
+        lambda: |-
+          it.printf(10, 10, id(font_times), "Power Manager");
+          it.printf(10, 25, id(font_times), "JLNTR2k4 003");
+      - id: page2
+        lambda: |-
+          it.printf(10, 0, id(font_times), "Power B1 %.3f kW", id(power_board_1).state);
+          it.printf(10, 15, id(font_times), "Total B1 %.3f kW", id(tde_board_1).state);
+          it.printf(10, 30, id(font_times), "Power B2 %.3f kW", id(power_board_2).state);
+          it.printf(10, 45, id(font_times), "Total B2 %.3f kW", id(tde_board_2).state);
+
+
+font:
+  - file: "fonts/times.ttf"
+    id: font_times
+    size: 16
+
+time:
+  - platform: sntp
+    id: my_time
