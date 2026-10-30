@@ -4,12 +4,62 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+concurrency:
+  group: publish
+  cancel-in-progress: true
 
 jobs:
   build:
-    uses: esphome/workflows/.github/workflows/publish.yml@main
+    name: Build firmware
+    uses: esphome/workflows/.github/workflows/build.yml@2026.10.3
     with:
-      # CHANGEME: Set the filenames of your config files here:
-      files: project-template-esp32.yaml,project-template-esp8266.yaml
-      # CHANGEME: Set the name of your project here:
-      name: Template Project
+      files: |
+        power-manager-multi-02.yaml
+        power-manager-multi-10.yaml
+        power-manager-multi-18.yaml
+        power-manager-multi-26.yaml
+        power-manager-multi-34.yaml
+        power-manager-multi-42.yaml
+      # All sizes share esphome.name, so name the firmware after the file
+      name-from-file: true
+
+  publish:
+    name: Publish website
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v7.0.1
+
+      - name: Download firmware
+        uses: actions/download-artifact@v8.0.2
+        with:
+          pattern: power-manager-multi-*
+          path: firmware
+          merge-multiple: true
+
+      - name: Assemble website
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p site
+          cp -r static/. site/
+          # One folder (and manifest) per size: site/power-manager-multi-XX/
+          for dir in firmware/*/; do
+            size=$(basename "$dir")
+            mkdir -p "site/$size"
+            cp "$dir$VERSION"/* "site/$size/"
+          done
+          find site -name manifest.json -print -exec grep '"version"' {} \;
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
+        with:
+          branch: gh-pages
+          folder: site
+          clean: true

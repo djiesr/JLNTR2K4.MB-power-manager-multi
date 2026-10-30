@@ -4,18 +4,34 @@ on:
   pull_request:
 
 jobs:
+  generated:
+    name: Generated files are up to date
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v7.0.1
+      - name: Regenerate and compare
+        run: |
+          python3 tools/generate.py
+          git diff --exit-code -- '*.yaml'
+
   ci:
     name: Building ${{ matrix.file }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         file:
-          - project-template-esp32.yaml
-          - project-template-esp8266.yaml
+          - power-manager-multi-02.yaml
+          - power-manager-multi-10.yaml
+          - power-manager-multi-18.yaml
+          - power-manager-multi-26.yaml
+          - power-manager-multi-34.yaml
+          - power-manager-multi-42.yaml
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7.0.1
       - name: Build ESPHome firmware to verify configuration
-        uses: esphome/build-action@v1.5.0
+        uses: esphome/build-action@v8.1.0
         with:
-          yaml_file: ${{ matrix.file }}
+          yaml-file: ${{ matrix.file }}

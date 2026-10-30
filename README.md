@@ -1,21 +1,26 @@
-# ESPHome Project Template
+# Catroniq - Power Manager multiboard
 
-This repo serves as a template for creating a new ESPHome project.
+ESPHome firmware for the Catroniq multiboard energy monitor: an ESP32 main board with 2 CT clamp inputs, plus up to 5 MCP3008 extension boards of 8 inputs each (2, 10, 18, 26, 34 or 42 circuits).
 
-It includes a GitHub workflow that will automatically build the configuration(s) and then deploys a simple 
-website via GitHub pages that utilises [ESP Web Tools](https://esphome.github.io/esp-web-tools/) for users to 
-easily install your project onto their device.
+Install page: https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi/
 
-## Instructions
+## Files
 
-1. Use this repo template to [generate](https://github.com/esphome/esphome-project-template/generate) your own repository.
-   - Make sure to check `Include all branches` so that GitHub Pages is automatically enabled.
-2. Clone your new repository.
-3. Add your project specific YAML configuration(s) along with the contents of the `project-template-....yaml` files, taking note of the comments in this template file and name accordingly.
-4. 
-    a. Update [.github/workflows/publish.yml](.github/workflows/publish.yml) to contain your own YAML config filename(s).
-    b. Update [.github/workflows/ci.yml](.github/workflows/ci.yml) to contain your own YAML config filename(s).
-5. Update [static/_config.yml](static/_config.yml) to change the title, description and basic theme of the generated website.
-6. Add more content to the [static/index.md](static/index.md) file to explain your project.
-    Make sure to leave the installation code tags in place so users get the install button.
-7. Push your changes to the repository and GitHub Actions will automatically build and deploy your project.
+| File | Circuits |
+|---|---|
+| `power-manager-multi-02.yaml` | 2 (main board only) |
+| `power-manager-multi-10.yaml` | 10 (1 extension board) |
+| `power-manager-multi-18.yaml` | 18 |
+| `power-manager-multi-26.yaml` | 26 |
+| `power-manager-multi-34.yaml` | 34 |
+| `power-manager-multi-42.yaml` | 42 (5 extension boards) |
+
+**These files are generated.** Edit `tools/generate.py`, then run:
+
+```
+python tools/generate.py
+```
+
+Every circuit is generated identically in every size (same ids, names and sub-device), so moving a board to a bigger size keeps the CT settings, daily totals and Home Assistant history of the existing circuits. Keep it that way when editing the generator.
+
+Pushing to `main` builds the six firmwares and publishes the install page on GitHub Pages. Devices check that page for updates every 6 hours; bump `VERSION` in `tools/generate.py` to publish an update.

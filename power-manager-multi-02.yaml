@@ -1,0 +1,370 @@
+# GENERATED FILE - edit tools/generate.py and run it again.
+# Catroniq - Power Manager multiboard, 2 circuits
+
+# These substitutions allow the end user to override certain values
+substitutions:
+  name: "power-manager-multi"
+  # Modify variables if you use multiple boards
+  hostname: 'PM'
+  board_label: 'JLNTR2K4.MB'
+  # Modify variables based on your circuit, like "breaker 01" or "dryer"
+  ct_clamp_01: 'C01'
+  ct_clamp_02: 'C02'
+  # Modify variable based on your language
+  measured_current: 'Measured Current'
+  measured_power: 'Measured Power'
+  measured_total_power_daily: 'Measured Daily Total'
+  total_power: 'Total Power'
+  total_daily_energy: 'Total Daily Energy'
+  ct_model: 'CT Model'
+  ct_output: 'CT Output'
+  ct_none: 'None'
+  circuit_voltage: 'Circuit Voltage'
+  ct_correction: 'CT Correction'
+
+esphome:
+  name: "${name}"
+  # One Home Assistant device per circuit (sensors + CT settings)
+  devices:
+    - id: dev_c01
+      name: "$hostname $ct_clamp_01"
+    - id: dev_c02
+      name: "$hostname $ct_clamp_02"
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  project:
+    name: esphome.power-manager-multi
+    version: "8.0.0"
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+  # Lets the device install the firmware published on GitHub Pages
+  - platform: http_request
+
+http_request:
+  verify_ssl: true
+
+# Home Assistant shows "Update available" when a new version is published
+update:
+  - platform: http_request
+    name: Firmware
+    source: https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi/power-manager-multi-02/manifest.json
+    update_interval: 6h
+
+dashboard_import:
+  package_import_url: github://djiesr/JLNTR2K4.MB-power-manager-multi/power-manager-multi-02.yaml@main
+
+wifi:
+  ap:
+    password: "12345678"
+
+captive_portal:
+
+# Wi-Fi setup over USB from the install page. Bluetooth improv (esp32_improv)
+# is left out: it keeps ~50 KB of RAM busy, needed for HTTPS updates on big boards.
+improv_serial:
+
+# Free memory, to check there is room for HTTPS updates
+debug:
+  update_interval: 60s
+
+web_server:
+  port: 80
+  version: 2
+
+time:
+  - platform: sntp
+    id: my_time
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: $hostname ESP IP Address
+      id: ip_now
+      entity_category: diagnostic
+      disabled_by_default: true
+    ssid:
+      name: $hostname ESP Connected SSID
+      entity_category: diagnostic
+      disabled_by_default: true
+    mac_address:
+      name: $hostname ESP Mac Wifi Address
+      entity_category: diagnostic
+      disabled_by_default: true
+
+sensor:
+  - platform: debug
+    free:
+      name: $hostname Free Memory
+      entity_category: diagnostic
+      disabled_by_default: true
+    block:
+      name: $hostname Largest Free Block
+      entity_category: diagnostic
+      disabled_by_default: true
+
+  ###### Circuit C01 ######
+  - platform: adc
+    pin: GPIO34
+    id: adc_c01
+    attenuation: 12db
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c01
+    id: measured_current_c01
+    name: $measured_current
+    device_id: dev_c01
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c01).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c01).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c01).state / 100.0f;
+
+  - platform: template
+    id: power_c01
+    name: $measured_power
+    device_id: dev_c01
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c01).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c01).active_index().value_or(0)];
+        return id(measured_current_c01).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c01
+    name: $measured_total_power_daily
+    device_id: dev_c01
+    power_id: power_c01
+    device_class: energy
+    restore: true
+
+  ###### Circuit C02 ######
+  - platform: adc
+    pin: GPIO35
+    id: adc_c02
+    attenuation: 12db
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c02
+    id: measured_current_c02
+    name: $measured_current
+    device_id: dev_c02
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c02).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c02).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c02).state / 100.0f;
+
+  - platform: template
+    id: power_c02
+    name: $measured_power
+    device_id: dev_c02
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c02).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c02).active_index().value_or(0)];
+        return id(measured_current_c02).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c02
+    name: $measured_total_power_daily
+    device_id: dev_c02
+    power_id: power_c02
+    device_class: energy
+    restore: true
+
+  # Whole board
+  - platform: template
+    id: power_total
+    name: $hostname $total_power
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      float total = 0;
+      for (auto *s : {id(power_c01), id(power_c02)}) {
+        if (!std::isnan(s->state)) total += s->state;
+      }
+      return total;
+
+  - platform: total_daily_energy
+    id: tde_total
+    name: $hostname $total_daily_energy
+    power_id: power_total
+    device_class: energy
+    restore: true
+
+########################################################## CT Clamp configuration (editable in HA) ##########################################
+
+select:
+  - platform: template
+    id: ct_model_c01
+    name: $ct_model
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c01
+    name: $ct_output
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c01
+    name: $circuit_voltage
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c02
+    name: $ct_model
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c02
+    name: $ct_output
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c02
+    name: $circuit_voltage
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+number:
+  - platform: template
+    id: ct_correction_c01
+    name: $ct_correction
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c02
+    name: $ct_correction
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+
+# Screen
+i2c:
+  scl: D1
+  sda: D2
+  scan: false
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_title
+    size: 14
+  - file: "gfonts://Roboto Mono"
+    id: font_small
+    size: 12
+
+interval:
+  - interval: 5s
+    then:
+      - display.page.show_next: oled
+
+display:
+  - platform: ssd1306_i2c
+    id: oled
+    model: "SSD1306 128x64"
+    reset_pin: D0
+    address: 0x3C
+    update_interval: 1s
+    pages:
+      - id: page_info
+        lambda: |-
+          it.print(0, 0, id(font_title), "Power Manager");
+          it.print(0, 16, id(font_small), "${board_label} - 2 c.");
+          it.printf(0, 32, id(font_small), "IP %s", id(ip_now).state.c_str());
+          it.printf(0, 48, id(font_small), "Tot %6.0f W", id(power_total).state * 1000);
+      - id: page_c01
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c01), id(measured_current_c02)};
+          sensor::Sensor *pwr[] = {id(power_c01), id(power_c02)};
+          for (int i = 0; i < 2; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 1 + i, cur[i]->state, pwr[i]->state * 1000);

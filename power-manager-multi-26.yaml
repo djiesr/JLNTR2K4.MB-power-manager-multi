@@ -1,0 +1,2748 @@
+# GENERATED FILE - edit tools/generate.py and run it again.
+# Catroniq - Power Manager multiboard, 26 circuits
+
+# These substitutions allow the end user to override certain values
+substitutions:
+  name: "power-manager-multi"
+  # Modify variables if you use multiple boards
+  hostname: 'PM'
+  board_label: 'JLNTR2K4.MB'
+  # Modify variables based on your circuit, like "breaker 01" or "dryer"
+  ct_clamp_01: 'C01'
+  ct_clamp_02: 'C02'
+  ct_clamp_03: 'C03'
+  ct_clamp_04: 'C04'
+  ct_clamp_05: 'C05'
+  ct_clamp_06: 'C06'
+  ct_clamp_07: 'C07'
+  ct_clamp_08: 'C08'
+  ct_clamp_09: 'C09'
+  ct_clamp_10: 'C10'
+  ct_clamp_11: 'C11'
+  ct_clamp_12: 'C12'
+  ct_clamp_13: 'C13'
+  ct_clamp_14: 'C14'
+  ct_clamp_15: 'C15'
+  ct_clamp_16: 'C16'
+  ct_clamp_17: 'C17'
+  ct_clamp_18: 'C18'
+  ct_clamp_19: 'C19'
+  ct_clamp_20: 'C20'
+  ct_clamp_21: 'C21'
+  ct_clamp_22: 'C22'
+  ct_clamp_23: 'C23'
+  ct_clamp_24: 'C24'
+  ct_clamp_25: 'C25'
+  ct_clamp_26: 'C26'
+  # Modify variable based on your language
+  measured_current: 'Measured Current'
+  measured_power: 'Measured Power'
+  measured_total_power_daily: 'Measured Daily Total'
+  total_power: 'Total Power'
+  total_daily_energy: 'Total Daily Energy'
+  ct_model: 'CT Model'
+  ct_output: 'CT Output'
+  ct_none: 'None'
+  circuit_voltage: 'Circuit Voltage'
+  ct_correction: 'CT Correction'
+
+esphome:
+  name: "${name}"
+  # One Home Assistant device per circuit (sensors + CT settings)
+  devices:
+    - id: dev_c01
+      name: "$hostname $ct_clamp_01"
+    - id: dev_c02
+      name: "$hostname $ct_clamp_02"
+    - id: dev_c03
+      name: "$hostname $ct_clamp_03"
+    - id: dev_c04
+      name: "$hostname $ct_clamp_04"
+    - id: dev_c05
+      name: "$hostname $ct_clamp_05"
+    - id: dev_c06
+      name: "$hostname $ct_clamp_06"
+    - id: dev_c07
+      name: "$hostname $ct_clamp_07"
+    - id: dev_c08
+      name: "$hostname $ct_clamp_08"
+    - id: dev_c09
+      name: "$hostname $ct_clamp_09"
+    - id: dev_c10
+      name: "$hostname $ct_clamp_10"
+    - id: dev_c11
+      name: "$hostname $ct_clamp_11"
+    - id: dev_c12
+      name: "$hostname $ct_clamp_12"
+    - id: dev_c13
+      name: "$hostname $ct_clamp_13"
+    - id: dev_c14
+      name: "$hostname $ct_clamp_14"
+    - id: dev_c15
+      name: "$hostname $ct_clamp_15"
+    - id: dev_c16
+      name: "$hostname $ct_clamp_16"
+    - id: dev_c17
+      name: "$hostname $ct_clamp_17"
+    - id: dev_c18
+      name: "$hostname $ct_clamp_18"
+    - id: dev_c19
+      name: "$hostname $ct_clamp_19"
+    - id: dev_c20
+      name: "$hostname $ct_clamp_20"
+    - id: dev_c21
+      name: "$hostname $ct_clamp_21"
+    - id: dev_c22
+      name: "$hostname $ct_clamp_22"
+    - id: dev_c23
+      name: "$hostname $ct_clamp_23"
+    - id: dev_c24
+      name: "$hostname $ct_clamp_24"
+    - id: dev_c25
+      name: "$hostname $ct_clamp_25"
+    - id: dev_c26
+      name: "$hostname $ct_clamp_26"
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  project:
+    name: esphome.power-manager-multi
+    version: "8.0.0"
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+  # Lets the device install the firmware published on GitHub Pages
+  - platform: http_request
+
+http_request:
+  verify_ssl: true
+
+# Home Assistant shows "Update available" when a new version is published
+update:
+  - platform: http_request
+    name: Firmware
+    source: https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi/power-manager-multi-26/manifest.json
+    update_interval: 6h
+
+dashboard_import:
+  package_import_url: github://djiesr/JLNTR2K4.MB-power-manager-multi/power-manager-multi-26.yaml@main
+
+wifi:
+  ap:
+    password: "12345678"
+
+captive_portal:
+
+# Wi-Fi setup over USB from the install page. Bluetooth improv (esp32_improv)
+# is left out: it keeps ~50 KB of RAM busy, needed for HTTPS updates on big boards.
+improv_serial:
+
+# Free memory, to check there is room for HTTPS updates
+debug:
+  update_interval: 60s
+
+web_server:
+  port: 80
+  version: 2
+
+time:
+  - platform: sntp
+    id: my_time
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: $hostname ESP IP Address
+      id: ip_now
+      entity_category: diagnostic
+      disabled_by_default: true
+    ssid:
+      name: $hostname ESP Connected SSID
+      entity_category: diagnostic
+      disabled_by_default: true
+    mac_address:
+      name: $hostname ESP Mac Wifi Address
+      entity_category: diagnostic
+      disabled_by_default: true
+
+spi:
+  clk_pin: D5
+  mosi_pin: D7
+  miso_pin: D6
+
+# One MCP3008 per extension board
+mcp3008:
+  - cs_pin: GPIO13
+    id: main_board_1
+  - cs_pin: GPIO15
+    id: main_board_2
+  - cs_pin: D8
+    id: main_board_3
+
+sensor:
+  - platform: debug
+    free:
+      name: $hostname Free Memory
+      entity_category: diagnostic
+      disabled_by_default: true
+    block:
+      name: $hostname Largest Free Block
+      entity_category: diagnostic
+      disabled_by_default: true
+
+  ###### Circuit C01 ######
+  - platform: adc
+    pin: GPIO34
+    id: adc_c01
+    attenuation: 12db
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c01
+    id: measured_current_c01
+    name: $measured_current
+    device_id: dev_c01
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c01).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c01).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c01).state / 100.0f;
+
+  - platform: template
+    id: power_c01
+    name: $measured_power
+    device_id: dev_c01
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c01).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c01).active_index().value_or(0)];
+        return id(measured_current_c01).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c01
+    name: $measured_total_power_daily
+    device_id: dev_c01
+    power_id: power_c01
+    device_class: energy
+    restore: true
+
+  ###### Circuit C02 ######
+  - platform: adc
+    pin: GPIO35
+    id: adc_c02
+    attenuation: 12db
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c02
+    id: measured_current_c02
+    name: $measured_current
+    device_id: dev_c02
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c02).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c02).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c02).state / 100.0f;
+
+  - platform: template
+    id: power_c02
+    name: $measured_power
+    device_id: dev_c02
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c02).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c02).active_index().value_or(0)];
+        return id(measured_current_c02).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c02
+    name: $measured_total_power_daily
+    device_id: dev_c02
+    power_id: power_c02
+    device_class: energy
+    restore: true
+
+  ###### Circuit C03 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 0
+    id: adc_c03
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c03
+    id: measured_current_c03
+    name: $measured_current
+    device_id: dev_c03
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c03).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c03).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c03).state / 100.0f;
+
+  - platform: template
+    id: power_c03
+    name: $measured_power
+    device_id: dev_c03
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c03).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c03).active_index().value_or(0)];
+        return id(measured_current_c03).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c03
+    name: $measured_total_power_daily
+    device_id: dev_c03
+    power_id: power_c03
+    device_class: energy
+    restore: true
+
+  ###### Circuit C04 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 1
+    id: adc_c04
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c04
+    id: measured_current_c04
+    name: $measured_current
+    device_id: dev_c04
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c04).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c04).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c04).state / 100.0f;
+
+  - platform: template
+    id: power_c04
+    name: $measured_power
+    device_id: dev_c04
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c04).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c04).active_index().value_or(0)];
+        return id(measured_current_c04).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c04
+    name: $measured_total_power_daily
+    device_id: dev_c04
+    power_id: power_c04
+    device_class: energy
+    restore: true
+
+  ###### Circuit C05 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 2
+    id: adc_c05
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c05
+    id: measured_current_c05
+    name: $measured_current
+    device_id: dev_c05
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c05).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c05).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c05).state / 100.0f;
+
+  - platform: template
+    id: power_c05
+    name: $measured_power
+    device_id: dev_c05
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c05).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c05).active_index().value_or(0)];
+        return id(measured_current_c05).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c05
+    name: $measured_total_power_daily
+    device_id: dev_c05
+    power_id: power_c05
+    device_class: energy
+    restore: true
+
+  ###### Circuit C06 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 3
+    id: adc_c06
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c06
+    id: measured_current_c06
+    name: $measured_current
+    device_id: dev_c06
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c06).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c06).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c06).state / 100.0f;
+
+  - platform: template
+    id: power_c06
+    name: $measured_power
+    device_id: dev_c06
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c06).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c06).active_index().value_or(0)];
+        return id(measured_current_c06).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c06
+    name: $measured_total_power_daily
+    device_id: dev_c06
+    power_id: power_c06
+    device_class: energy
+    restore: true
+
+  ###### Circuit C07 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 4
+    id: adc_c07
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c07
+    id: measured_current_c07
+    name: $measured_current
+    device_id: dev_c07
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c07).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c07).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c07).state / 100.0f;
+
+  - platform: template
+    id: power_c07
+    name: $measured_power
+    device_id: dev_c07
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c07).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c07).active_index().value_or(0)];
+        return id(measured_current_c07).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c07
+    name: $measured_total_power_daily
+    device_id: dev_c07
+    power_id: power_c07
+    device_class: energy
+    restore: true
+
+  ###### Circuit C08 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 5
+    id: adc_c08
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c08
+    id: measured_current_c08
+    name: $measured_current
+    device_id: dev_c08
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c08).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c08).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c08).state / 100.0f;
+
+  - platform: template
+    id: power_c08
+    name: $measured_power
+    device_id: dev_c08
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c08).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c08).active_index().value_or(0)];
+        return id(measured_current_c08).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c08
+    name: $measured_total_power_daily
+    device_id: dev_c08
+    power_id: power_c08
+    device_class: energy
+    restore: true
+
+  ###### Circuit C09 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 6
+    id: adc_c09
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c09
+    id: measured_current_c09
+    name: $measured_current
+    device_id: dev_c09
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c09).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c09).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c09).state / 100.0f;
+
+  - platform: template
+    id: power_c09
+    name: $measured_power
+    device_id: dev_c09
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c09).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c09).active_index().value_or(0)];
+        return id(measured_current_c09).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c09
+    name: $measured_total_power_daily
+    device_id: dev_c09
+    power_id: power_c09
+    device_class: energy
+    restore: true
+
+  ###### Circuit C10 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_1
+    number: 7
+    id: adc_c10
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c10
+    id: measured_current_c10
+    name: $measured_current
+    device_id: dev_c10
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c10).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c10).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c10).state / 100.0f;
+
+  - platform: template
+    id: power_c10
+    name: $measured_power
+    device_id: dev_c10
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c10).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c10).active_index().value_or(0)];
+        return id(measured_current_c10).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c10
+    name: $measured_total_power_daily
+    device_id: dev_c10
+    power_id: power_c10
+    device_class: energy
+    restore: true
+
+  ###### Circuit C11 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 0
+    id: adc_c11
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c11
+    id: measured_current_c11
+    name: $measured_current
+    device_id: dev_c11
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c11).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c11).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c11).state / 100.0f;
+
+  - platform: template
+    id: power_c11
+    name: $measured_power
+    device_id: dev_c11
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c11).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c11).active_index().value_or(0)];
+        return id(measured_current_c11).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c11
+    name: $measured_total_power_daily
+    device_id: dev_c11
+    power_id: power_c11
+    device_class: energy
+    restore: true
+
+  ###### Circuit C12 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 1
+    id: adc_c12
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c12
+    id: measured_current_c12
+    name: $measured_current
+    device_id: dev_c12
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c12).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c12).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c12).state / 100.0f;
+
+  - platform: template
+    id: power_c12
+    name: $measured_power
+    device_id: dev_c12
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c12).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c12).active_index().value_or(0)];
+        return id(measured_current_c12).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c12
+    name: $measured_total_power_daily
+    device_id: dev_c12
+    power_id: power_c12
+    device_class: energy
+    restore: true
+
+  ###### Circuit C13 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 2
+    id: adc_c13
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c13
+    id: measured_current_c13
+    name: $measured_current
+    device_id: dev_c13
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c13).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c13).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c13).state / 100.0f;
+
+  - platform: template
+    id: power_c13
+    name: $measured_power
+    device_id: dev_c13
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c13).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c13).active_index().value_or(0)];
+        return id(measured_current_c13).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c13
+    name: $measured_total_power_daily
+    device_id: dev_c13
+    power_id: power_c13
+    device_class: energy
+    restore: true
+
+  ###### Circuit C14 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 3
+    id: adc_c14
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c14
+    id: measured_current_c14
+    name: $measured_current
+    device_id: dev_c14
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c14).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c14).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c14).state / 100.0f;
+
+  - platform: template
+    id: power_c14
+    name: $measured_power
+    device_id: dev_c14
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c14).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c14).active_index().value_or(0)];
+        return id(measured_current_c14).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c14
+    name: $measured_total_power_daily
+    device_id: dev_c14
+    power_id: power_c14
+    device_class: energy
+    restore: true
+
+  ###### Circuit C15 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 4
+    id: adc_c15
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c15
+    id: measured_current_c15
+    name: $measured_current
+    device_id: dev_c15
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c15).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c15).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c15).state / 100.0f;
+
+  - platform: template
+    id: power_c15
+    name: $measured_power
+    device_id: dev_c15
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c15).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c15).active_index().value_or(0)];
+        return id(measured_current_c15).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c15
+    name: $measured_total_power_daily
+    device_id: dev_c15
+    power_id: power_c15
+    device_class: energy
+    restore: true
+
+  ###### Circuit C16 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 5
+    id: adc_c16
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c16
+    id: measured_current_c16
+    name: $measured_current
+    device_id: dev_c16
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c16).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c16).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c16).state / 100.0f;
+
+  - platform: template
+    id: power_c16
+    name: $measured_power
+    device_id: dev_c16
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c16).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c16).active_index().value_or(0)];
+        return id(measured_current_c16).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c16
+    name: $measured_total_power_daily
+    device_id: dev_c16
+    power_id: power_c16
+    device_class: energy
+    restore: true
+
+  ###### Circuit C17 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 6
+    id: adc_c17
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c17
+    id: measured_current_c17
+    name: $measured_current
+    device_id: dev_c17
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c17).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c17).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c17).state / 100.0f;
+
+  - platform: template
+    id: power_c17
+    name: $measured_power
+    device_id: dev_c17
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c17).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c17).active_index().value_or(0)];
+        return id(measured_current_c17).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c17
+    name: $measured_total_power_daily
+    device_id: dev_c17
+    power_id: power_c17
+    device_class: energy
+    restore: true
+
+  ###### Circuit C18 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_2
+    number: 7
+    id: adc_c18
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c18
+    id: measured_current_c18
+    name: $measured_current
+    device_id: dev_c18
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c18).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c18).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c18).state / 100.0f;
+
+  - platform: template
+    id: power_c18
+    name: $measured_power
+    device_id: dev_c18
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c18).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c18).active_index().value_or(0)];
+        return id(measured_current_c18).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c18
+    name: $measured_total_power_daily
+    device_id: dev_c18
+    power_id: power_c18
+    device_class: energy
+    restore: true
+
+  ###### Circuit C19 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 0
+    id: adc_c19
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c19
+    id: measured_current_c19
+    name: $measured_current
+    device_id: dev_c19
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c19).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c19).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c19).state / 100.0f;
+
+  - platform: template
+    id: power_c19
+    name: $measured_power
+    device_id: dev_c19
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c19).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c19).active_index().value_or(0)];
+        return id(measured_current_c19).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c19
+    name: $measured_total_power_daily
+    device_id: dev_c19
+    power_id: power_c19
+    device_class: energy
+    restore: true
+
+  ###### Circuit C20 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 1
+    id: adc_c20
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c20
+    id: measured_current_c20
+    name: $measured_current
+    device_id: dev_c20
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c20).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c20).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c20).state / 100.0f;
+
+  - platform: template
+    id: power_c20
+    name: $measured_power
+    device_id: dev_c20
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c20).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c20).active_index().value_or(0)];
+        return id(measured_current_c20).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c20
+    name: $measured_total_power_daily
+    device_id: dev_c20
+    power_id: power_c20
+    device_class: energy
+    restore: true
+
+  ###### Circuit C21 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 2
+    id: adc_c21
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c21
+    id: measured_current_c21
+    name: $measured_current
+    device_id: dev_c21
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c21).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c21).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c21).state / 100.0f;
+
+  - platform: template
+    id: power_c21
+    name: $measured_power
+    device_id: dev_c21
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c21).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c21).active_index().value_or(0)];
+        return id(measured_current_c21).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c21
+    name: $measured_total_power_daily
+    device_id: dev_c21
+    power_id: power_c21
+    device_class: energy
+    restore: true
+
+  ###### Circuit C22 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 3
+    id: adc_c22
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c22
+    id: measured_current_c22
+    name: $measured_current
+    device_id: dev_c22
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c22).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c22).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c22).state / 100.0f;
+
+  - platform: template
+    id: power_c22
+    name: $measured_power
+    device_id: dev_c22
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c22).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c22).active_index().value_or(0)];
+        return id(measured_current_c22).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c22
+    name: $measured_total_power_daily
+    device_id: dev_c22
+    power_id: power_c22
+    device_class: energy
+    restore: true
+
+  ###### Circuit C23 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 4
+    id: adc_c23
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c23
+    id: measured_current_c23
+    name: $measured_current
+    device_id: dev_c23
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c23).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c23).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c23).state / 100.0f;
+
+  - platform: template
+    id: power_c23
+    name: $measured_power
+    device_id: dev_c23
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c23).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c23).active_index().value_or(0)];
+        return id(measured_current_c23).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c23
+    name: $measured_total_power_daily
+    device_id: dev_c23
+    power_id: power_c23
+    device_class: energy
+    restore: true
+
+  ###### Circuit C24 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 5
+    id: adc_c24
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c24
+    id: measured_current_c24
+    name: $measured_current
+    device_id: dev_c24
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c24).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c24).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c24).state / 100.0f;
+
+  - platform: template
+    id: power_c24
+    name: $measured_power
+    device_id: dev_c24
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c24).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c24).active_index().value_or(0)];
+        return id(measured_current_c24).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c24
+    name: $measured_total_power_daily
+    device_id: dev_c24
+    power_id: power_c24
+    device_class: energy
+    restore: true
+
+  ###### Circuit C25 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 6
+    id: adc_c25
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c25
+    id: measured_current_c25
+    name: $measured_current
+    device_id: dev_c25
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c25).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c25).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c25).state / 100.0f;
+
+  - platform: template
+    id: power_c25
+    name: $measured_power
+    device_id: dev_c25
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c25).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c25).active_index().value_or(0)];
+        return id(measured_current_c25).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c25
+    name: $measured_total_power_daily
+    device_id: dev_c25
+    power_id: power_c25
+    device_class: energy
+    restore: true
+
+  ###### Circuit C26 ######
+  - platform: mcp3008
+    mcp3008_id: main_board_3
+    number: 7
+    id: adc_c26
+    update_interval: 60s
+    internal: true
+
+  - platform: ct_clamp
+    sensor: adc_c26
+    id: measured_current_c26
+    name: $measured_current
+    device_id: dev_c26
+    update_interval: 15s
+    accuracy_decimals: 3
+    filters:
+      - lambda: |-
+          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float OUT_V[] = {1.0, 0.5, 0.333};
+          float rating = RATING[id(ct_model_c26).active_index().value_or(0)];
+          float out_v = OUT_V[id(ct_output_c26).active_index().value_or(0)];
+          if (rating == 0 || x <= 0.003f) return 0.0f;
+          return (x - 0.003f) * rating / (out_v - 0.003f) * id(ct_correction_c26).state / 100.0f;
+
+  - platform: template
+    id: power_c26
+    name: $measured_power
+    device_id: dev_c26
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      if (id(measured_current_c26).state > 0.03) {
+        static const float VOLTS[] = {120.0f, 240.0f, 230.0f};
+        float volts = VOLTS[id(circuit_voltage_c26).active_index().value_or(0)];
+        return id(measured_current_c26).state * volts / 1000;
+      }
+      return 0.0;
+
+  - platform: total_daily_energy
+    id: tde_c26
+    name: $measured_total_power_daily
+    device_id: dev_c26
+    power_id: power_c26
+    device_class: energy
+    restore: true
+
+  # Whole board
+  - platform: template
+    id: power_total
+    name: $hostname $total_power
+    unit_of_measurement: 'kW'
+    device_class: power
+    state_class: measurement
+    update_interval: 15s
+    accuracy_decimals: 3
+    lambda: |-
+      float total = 0;
+      for (auto *s : {id(power_c01), id(power_c02), id(power_c03), id(power_c04), id(power_c05), id(power_c06), id(power_c07), id(power_c08), id(power_c09), id(power_c10), id(power_c11), id(power_c12), id(power_c13), id(power_c14), id(power_c15), id(power_c16), id(power_c17), id(power_c18), id(power_c19), id(power_c20), id(power_c21), id(power_c22), id(power_c23), id(power_c24), id(power_c25), id(power_c26)}) {
+        if (!std::isnan(s->state)) total += s->state;
+      }
+      return total;
+
+  - platform: total_daily_energy
+    id: tde_total
+    name: $hostname $total_daily_energy
+    power_id: power_total
+    device_class: energy
+    restore: true
+
+########################################################## CT Clamp configuration (editable in HA) ##########################################
+
+select:
+  - platform: template
+    id: ct_model_c01
+    name: $ct_model
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c01
+    name: $ct_output
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c01
+    name: $circuit_voltage
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c02
+    name: $ct_model
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c02
+    name: $ct_output
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c02
+    name: $circuit_voltage
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c03
+    name: $ct_model
+    device_id: dev_c03
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c03
+    name: $ct_output
+    device_id: dev_c03
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c03
+    name: $circuit_voltage
+    device_id: dev_c03
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c04
+    name: $ct_model
+    device_id: dev_c04
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c04
+    name: $ct_output
+    device_id: dev_c04
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c04
+    name: $circuit_voltage
+    device_id: dev_c04
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c05
+    name: $ct_model
+    device_id: dev_c05
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c05
+    name: $ct_output
+    device_id: dev_c05
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c05
+    name: $circuit_voltage
+    device_id: dev_c05
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c06
+    name: $ct_model
+    device_id: dev_c06
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c06
+    name: $ct_output
+    device_id: dev_c06
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c06
+    name: $circuit_voltage
+    device_id: dev_c06
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c07
+    name: $ct_model
+    device_id: dev_c07
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c07
+    name: $ct_output
+    device_id: dev_c07
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c07
+    name: $circuit_voltage
+    device_id: dev_c07
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c08
+    name: $ct_model
+    device_id: dev_c08
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c08
+    name: $ct_output
+    device_id: dev_c08
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c08
+    name: $circuit_voltage
+    device_id: dev_c08
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c09
+    name: $ct_model
+    device_id: dev_c09
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c09
+    name: $ct_output
+    device_id: dev_c09
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c09
+    name: $circuit_voltage
+    device_id: dev_c09
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c10
+    name: $ct_model
+    device_id: dev_c10
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c10
+    name: $ct_output
+    device_id: dev_c10
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c10
+    name: $circuit_voltage
+    device_id: dev_c10
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c11
+    name: $ct_model
+    device_id: dev_c11
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c11
+    name: $ct_output
+    device_id: dev_c11
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c11
+    name: $circuit_voltage
+    device_id: dev_c11
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c12
+    name: $ct_model
+    device_id: dev_c12
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c12
+    name: $ct_output
+    device_id: dev_c12
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c12
+    name: $circuit_voltage
+    device_id: dev_c12
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c13
+    name: $ct_model
+    device_id: dev_c13
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c13
+    name: $ct_output
+    device_id: dev_c13
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c13
+    name: $circuit_voltage
+    device_id: dev_c13
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c14
+    name: $ct_model
+    device_id: dev_c14
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c14
+    name: $ct_output
+    device_id: dev_c14
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c14
+    name: $circuit_voltage
+    device_id: dev_c14
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c15
+    name: $ct_model
+    device_id: dev_c15
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c15
+    name: $ct_output
+    device_id: dev_c15
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c15
+    name: $circuit_voltage
+    device_id: dev_c15
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c16
+    name: $ct_model
+    device_id: dev_c16
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c16
+    name: $ct_output
+    device_id: dev_c16
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c16
+    name: $circuit_voltage
+    device_id: dev_c16
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c17
+    name: $ct_model
+    device_id: dev_c17
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c17
+    name: $ct_output
+    device_id: dev_c17
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c17
+    name: $circuit_voltage
+    device_id: dev_c17
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c18
+    name: $ct_model
+    device_id: dev_c18
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c18
+    name: $ct_output
+    device_id: dev_c18
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c18
+    name: $circuit_voltage
+    device_id: dev_c18
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c19
+    name: $ct_model
+    device_id: dev_c19
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c19
+    name: $ct_output
+    device_id: dev_c19
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c19
+    name: $circuit_voltage
+    device_id: dev_c19
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c20
+    name: $ct_model
+    device_id: dev_c20
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c20
+    name: $ct_output
+    device_id: dev_c20
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c20
+    name: $circuit_voltage
+    device_id: dev_c20
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c21
+    name: $ct_model
+    device_id: dev_c21
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c21
+    name: $ct_output
+    device_id: dev_c21
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c21
+    name: $circuit_voltage
+    device_id: dev_c21
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c22
+    name: $ct_model
+    device_id: dev_c22
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c22
+    name: $ct_output
+    device_id: dev_c22
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c22
+    name: $circuit_voltage
+    device_id: dev_c22
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c23
+    name: $ct_model
+    device_id: dev_c23
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c23
+    name: $ct_output
+    device_id: dev_c23
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c23
+    name: $circuit_voltage
+    device_id: dev_c23
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c24
+    name: $ct_model
+    device_id: dev_c24
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c24
+    name: $ct_output
+    device_id: dev_c24
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c24
+    name: $circuit_voltage
+    device_id: dev_c24
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c25
+    name: $ct_model
+    device_id: dev_c25
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c25
+    name: $ct_output
+    device_id: dev_c25
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c25
+    name: $circuit_voltage
+    device_id: dev_c25
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+  - platform: template
+    id: ct_model_c26
+    name: $ct_model
+    device_id: dev_c26
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    initial_option: "$ct_none"
+
+  - platform: template
+    id: ct_output_c26
+    name: $ct_output
+    device_id: dev_c26
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["1 V", "0.5 V", "0.333 V"]
+    initial_option: "1 V"
+
+  # 230 V is last: the select saves its index, keep existing choices valid
+  - platform: template
+    id: circuit_voltage_c26
+    name: $circuit_voltage
+    device_id: dev_c26
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: ["120 V", "240 V", "230 V"]
+    initial_option: "120 V"
+
+number:
+  - platform: template
+    id: ct_correction_c01
+    name: $ct_correction
+    device_id: dev_c01
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c02
+    name: $ct_correction
+    device_id: dev_c02
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c03
+    name: $ct_correction
+    device_id: dev_c03
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c04
+    name: $ct_correction
+    device_id: dev_c04
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c05
+    name: $ct_correction
+    device_id: dev_c05
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c06
+    name: $ct_correction
+    device_id: dev_c06
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c07
+    name: $ct_correction
+    device_id: dev_c07
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c08
+    name: $ct_correction
+    device_id: dev_c08
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c09
+    name: $ct_correction
+    device_id: dev_c09
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c10
+    name: $ct_correction
+    device_id: dev_c10
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c11
+    name: $ct_correction
+    device_id: dev_c11
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c12
+    name: $ct_correction
+    device_id: dev_c12
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c13
+    name: $ct_correction
+    device_id: dev_c13
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c14
+    name: $ct_correction
+    device_id: dev_c14
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c15
+    name: $ct_correction
+    device_id: dev_c15
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c16
+    name: $ct_correction
+    device_id: dev_c16
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c17
+    name: $ct_correction
+    device_id: dev_c17
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c18
+    name: $ct_correction
+    device_id: dev_c18
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c19
+    name: $ct_correction
+    device_id: dev_c19
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c20
+    name: $ct_correction
+    device_id: dev_c20
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c21
+    name: $ct_correction
+    device_id: dev_c21
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c22
+    name: $ct_correction
+    device_id: dev_c22
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c23
+    name: $ct_correction
+    device_id: dev_c23
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c24
+    name: $ct_correction
+    device_id: dev_c24
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c25
+    name: $ct_correction
+    device_id: dev_c25
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+  - platform: template
+    id: ct_correction_c26
+    name: $ct_correction
+    device_id: dev_c26
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_value: 100
+    min_value: 50
+    max_value: 150
+    step: 0.1
+    unit_of_measurement: "%"
+    mode: box
+
+
+# Screen
+i2c:
+  scl: D1
+  sda: D2
+  scan: false
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_title
+    size: 14
+  - file: "gfonts://Roboto Mono"
+    id: font_small
+    size: 12
+
+interval:
+  - interval: 5s
+    then:
+      - display.page.show_next: oled
+
+display:
+  - platform: ssd1306_i2c
+    id: oled
+    model: "SSD1306 128x64"
+    reset_pin: D0
+    address: 0x3C
+    update_interval: 1s
+    pages:
+      - id: page_info
+        lambda: |-
+          it.print(0, 0, id(font_title), "Power Manager");
+          it.print(0, 16, id(font_small), "${board_label} - 26 c.");
+          it.printf(0, 32, id(font_small), "IP %s", id(ip_now).state.c_str());
+          it.printf(0, 48, id(font_small), "Tot %6.0f W", id(power_total).state * 1000);
+      - id: page_c01
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c01), id(measured_current_c02), id(measured_current_c03), id(measured_current_c04)};
+          sensor::Sensor *pwr[] = {id(power_c01), id(power_c02), id(power_c03), id(power_c04)};
+          for (int i = 0; i < 4; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 1 + i, cur[i]->state, pwr[i]->state * 1000);
+      - id: page_c05
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c05), id(measured_current_c06), id(measured_current_c07), id(measured_current_c08)};
+          sensor::Sensor *pwr[] = {id(power_c05), id(power_c06), id(power_c07), id(power_c08)};
+          for (int i = 0; i < 4; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 5 + i, cur[i]->state, pwr[i]->state * 1000);
+      - id: page_c09
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c09), id(measured_current_c10), id(measured_current_c11), id(measured_current_c12)};
+          sensor::Sensor *pwr[] = {id(power_c09), id(power_c10), id(power_c11), id(power_c12)};
+          for (int i = 0; i < 4; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 9 + i, cur[i]->state, pwr[i]->state * 1000);
+      - id: page_c13
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c13), id(measured_current_c14), id(measured_current_c15), id(measured_current_c16)};
+          sensor::Sensor *pwr[] = {id(power_c13), id(power_c14), id(power_c15), id(power_c16)};
+          for (int i = 0; i < 4; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 13 + i, cur[i]->state, pwr[i]->state * 1000);
+      - id: page_c17
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c17), id(measured_current_c18), id(measured_current_c19), id(measured_current_c20)};
+          sensor::Sensor *pwr[] = {id(power_c17), id(power_c18), id(power_c19), id(power_c20)};
+          for (int i = 0; i < 4; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 17 + i, cur[i]->state, pwr[i]->state * 1000);
+      - id: page_c21
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c21), id(measured_current_c22), id(measured_current_c23), id(measured_current_c24)};
+          sensor::Sensor *pwr[] = {id(power_c21), id(power_c22), id(power_c23), id(power_c24)};
+          for (int i = 0; i < 4; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 21 + i, cur[i]->state, pwr[i]->state * 1000);
+      - id: page_c25
+        lambda: |-
+          sensor::Sensor *cur[] = {id(measured_current_c25), id(measured_current_c26)};
+          sensor::Sensor *pwr[] = {id(power_c25), id(power_c26)};
+          for (int i = 0; i < 2; i++)
+            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 25 + i, cur[i]->state, pwr[i]->state * 1000);
