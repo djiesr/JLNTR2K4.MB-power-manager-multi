@@ -156,7 +156,7 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: esphome.power-manager-multi
-    version: "8.1.0"
+    version: "8.2.0"
 
 esp32:
   board: wemos_d1_mini32
@@ -269,7 +269,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c01).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c01).active_index().value_or(0)];
@@ -318,7 +318,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c02).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c02).active_index().value_or(0)];
@@ -367,7 +367,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c03).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c03).active_index().value_or(0)];
@@ -416,7 +416,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c04).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c04).active_index().value_or(0)];
@@ -465,7 +465,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c05).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c05).active_index().value_or(0)];
@@ -514,7 +514,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c06).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c06).active_index().value_or(0)];
@@ -563,7 +563,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c07).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c07).active_index().value_or(0)];
@@ -612,7 +612,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c08).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c08).active_index().value_or(0)];
@@ -661,7 +661,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c09).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c09).active_index().value_or(0)];
@@ -710,7 +710,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c10).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c10).active_index().value_or(0)];
@@ -759,7 +759,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c11).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c11).active_index().value_or(0)];
@@ -808,7 +808,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c12).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c12).active_index().value_or(0)];
@@ -857,7 +857,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c13).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c13).active_index().value_or(0)];
@@ -906,7 +906,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c14).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c14).active_index().value_or(0)];
@@ -955,7 +955,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c15).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c15).active_index().value_or(0)];
@@ -1004,7 +1004,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c16).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c16).active_index().value_or(0)];
@@ -1053,7 +1053,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c17).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c17).active_index().value_or(0)];
@@ -1102,7 +1102,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c18).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c18).active_index().value_or(0)];
@@ -1151,7 +1151,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c19).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c19).active_index().value_or(0)];
@@ -1200,7 +1200,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c20).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c20).active_index().value_or(0)];
@@ -1249,7 +1249,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c21).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c21).active_index().value_or(0)];
@@ -1298,7 +1298,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c22).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c22).active_index().value_or(0)];
@@ -1347,7 +1347,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c23).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c23).active_index().value_or(0)];
@@ -1396,7 +1396,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c24).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c24).active_index().value_or(0)];
@@ -1445,7 +1445,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c25).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c25).active_index().value_or(0)];
@@ -1494,7 +1494,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c26).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c26).active_index().value_or(0)];
@@ -1543,7 +1543,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c27).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c27).active_index().value_or(0)];
@@ -1592,7 +1592,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c28).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c28).active_index().value_or(0)];
@@ -1641,7 +1641,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c29).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c29).active_index().value_or(0)];
@@ -1690,7 +1690,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c30).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c30).active_index().value_or(0)];
@@ -1739,7 +1739,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c31).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c31).active_index().value_or(0)];
@@ -1788,7 +1788,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c32).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c32).active_index().value_or(0)];
@@ -1837,7 +1837,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c33).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c33).active_index().value_or(0)];
@@ -1886,7 +1886,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c34).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c34).active_index().value_or(0)];
@@ -1935,7 +1935,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c35).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c35).active_index().value_or(0)];
@@ -1984,7 +1984,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c36).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c36).active_index().value_or(0)];
@@ -2033,7 +2033,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c37).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c37).active_index().value_or(0)];
@@ -2082,7 +2082,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c38).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c38).active_index().value_or(0)];
@@ -2131,7 +2131,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c39).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c39).active_index().value_or(0)];
@@ -2180,7 +2180,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c40).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c40).active_index().value_or(0)];
@@ -2229,7 +2229,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c41).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c41).active_index().value_or(0)];
@@ -2278,7 +2278,7 @@ sensor:
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {0, 5, 10, 15, 20, 30, 50, 100};
+          static const float RATING[] = {0, 5, 10, 15, 20, 25, 30, 50, 60, 100};
           static const float OUT_V[] = {1.0, 0.5, 0.333};
           float rating = RATING[id(ct_model_c42).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c42).active_index().value_or(0)];
@@ -2343,7 +2343,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2374,7 +2374,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2405,7 +2405,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2436,7 +2436,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2467,7 +2467,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2498,7 +2498,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2529,7 +2529,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2560,7 +2560,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2591,7 +2591,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2622,7 +2622,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2653,7 +2653,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2684,7 +2684,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2715,7 +2715,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2746,7 +2746,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2777,7 +2777,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2808,7 +2808,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2839,7 +2839,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2870,7 +2870,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2901,7 +2901,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2932,7 +2932,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2963,7 +2963,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -2994,7 +2994,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3025,7 +3025,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3056,7 +3056,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3087,7 +3087,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3118,7 +3118,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3149,7 +3149,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3180,7 +3180,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3211,7 +3211,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3242,7 +3242,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3273,7 +3273,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3304,7 +3304,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3335,7 +3335,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3366,7 +3366,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3397,7 +3397,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3428,7 +3428,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3459,7 +3459,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3490,7 +3490,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3521,7 +3521,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3552,7 +3552,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3583,7 +3583,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
@@ -3614,7 +3614,7 @@ select:
     entity_category: config
     optimistic: true
     restore_value: true
-    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template

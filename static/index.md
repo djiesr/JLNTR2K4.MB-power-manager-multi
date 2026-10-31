@@ -7,7 +7,7 @@ Le **Power Manager multiboard** de [Catroniq](https://catroniq.com/2022/11/01/ge
 ## Fonctions
 
 - Carte principale ESP32 avec 2 entrées de pince, plus jusqu'à 5 cartes d'extension de 8 entrées : 2, 10, 18, 26, 34 ou 42 circuits
-- Pinces CT de 5 à 100 A (sortie 1 V, 0,5 V ou 0,333 V)
+- Pinces CT de 5, 10, 15, 20, 25, 30, 50, 60 ou 100 A, à sortie 1 V, 0,5 V ou 0,333 V
 - Courant (A), puissance (kW) et énergie du jour (kWh) pour chaque circuit, plus le total de la carte
 - Circuits 120 V, 240 V (Amérique du Nord) ou 230 V (Europe)
 - Réglage des pinces directement dans Home Assistant, sans modifier de code

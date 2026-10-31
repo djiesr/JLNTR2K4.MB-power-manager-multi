@@ -12,7 +12,7 @@ Assistant history when a board is moved from one size to a bigger one.
 
 from pathlib import Path
 
-VERSION = "8.1.0"
+VERSION = "8.2.0"
 REPO = "djiesr/JLNTR2K4.MB-power-manager-multi"
 PAGES_URL = "https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi"
 
@@ -195,7 +195,7 @@ def channel_sensors(c):
     accuracy_decimals: 3
     filters:
       - lambda: |-
-          static const float RATING[] = {{0, 5, 10, 15, 20, 30, 50, 100}};
+          static const float RATING[] = {{0, 5, 10, 15, 20, 25, 30, 50, 60, 100}};
           static const float OUT_V[] = {{1.0, 0.5, 0.333}};
           float rating = RATING[id(ct_model_c{n}).active_index().value_or(0)];
           float out_v = OUT_V[id(ct_output_c{n}).active_index().value_or(0)];
@@ -269,7 +269,7 @@ def settings(size):
         selects += f"""  - platform: template
     id: ct_model_c{n}
     name: $ct_model
-{common}    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "30 A", "50 A", "100 A"]
+{common}    options: ["$ct_none", "5 A", "10 A", "15 A", "20 A", "25 A", "30 A", "50 A", "60 A", "100 A"]
     initial_option: "$ct_none"
 
   - platform: template
