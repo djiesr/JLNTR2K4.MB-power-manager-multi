@@ -63,7 +63,16 @@ Quand une nouvelle version est publiée, Home Assistant affiche **Mise à jour d
 
 ## Configuration des pinces
 
-Dans Home Assistant, chaque circuit apparaît comme un appareil séparé (**PM C01**, **PM C02**…), relié à la carte. Il regroupe ses mesures (courant, puissance, énergie) et ses réglages. Les circuits C01 et C02 sont sur la carte principale, C03 à C10 sur la 1re carte d'extension, C11 à C18 sur la 2e, et ainsi de suite.
+Dans Home Assistant, chaque circuit apparaît comme un appareil séparé (**PM A1**, **PM B0**…), relié à la carte. Il regroupe ses mesures (courant, puissance, énergie) et ses réglages. Les noms suivent ceux imprimés sur les cartes :
+
+| Carte | Connecteurs |
+|---|---|
+| Carte principale | A1, A2 |
+| 1re carte d'extension | B0 à B7 |
+| 2e carte d'extension | C0 à C7 |
+| 3e carte d'extension | D0 à D7 |
+| 4e carte d'extension | E0 à E7 |
+| 5e carte d'extension | F0 à F7 |
 
 Par défaut, tous les circuits sont à **None** (désactivés) pour éviter les valeurs au hasard sur les entrées sans pince. Pour chaque circuit utilisé, ouvrez son appareil dans Home Assistant, section **Configuration**, puis choisissez :
 

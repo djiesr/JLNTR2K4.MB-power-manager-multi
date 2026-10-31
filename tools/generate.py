@@ -12,7 +12,7 @@ Assistant history when a board is moved from one size to a bigger one.
 
 from pathlib import Path
 
-VERSION = "8.0.0"
+VERSION = "8.1.0"
 REPO = "djiesr/JLNTR2K4.MB-power-manager-multi"
 PAGES_URL = "https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi"
 
@@ -28,10 +28,23 @@ def stem(size):
     return f"power-manager-multi-{size:02d}"
 
 
+def label(c):
+    """Connector name printed on the boards: A1-A2 on the main board, then
+    B0-B7 on the 1st extension board, C0-C7 on the 2nd, etc.
+
+    Internal ids keep the circuit number (c01, c02, ...) so existing settings
+    are not lost when labels change."""
+    if c <= len(ONBOARD_PINS):
+        return f"A{c}"
+    board, pin = divmod(c - len(ONBOARD_PINS) - 1, 8)
+    return f"{chr(ord('B') + board)}{pin}"
+
+
 def header(size):
-    labels = "".join(f"  ct_clamp_{c:02d}: 'C{c:02d}'\n" for c in range(1, size + 1))
+    labels = "".join(f"  ct_clamp_{label(c).lower()}: '{label(c)}'\n" for c in range(1, size + 1))
     devices = "".join(
-        f'    - id: dev_c{c:02d}\n      name: "$hostname $ct_clamp_{c:02d}"\n' for c in range(1, size + 1))
+        f'    - id: dev_c{c:02d}\n      name: "$hostname $ct_clamp_{label(c).lower()}"\n'
+        for c in range(1, size + 1))
     return f"""# GENERATED FILE - edit tools/generate.py and run it again.
 # Catroniq - Power Manager multiboard, {size} circuits
 
@@ -42,6 +55,7 @@ substitutions:
   hostname: 'PM'
   board_label: 'JLNTR2K4.MB'
   # Modify variables based on your circuit, like "breaker 01" or "dryer"
+  # A1-A2: main board, B0-B7: 1st extension board, C0-C7: 2nd, etc.
 {labels}  # Modify variable based on your language
   measured_current: 'Measured Current'
   measured_power: 'Measured Power'
@@ -300,12 +314,14 @@ def display(size):
         chans = list(range(first, min(first + 4, size + 1)))
         cur = ", ".join(f"id(measured_current_c{c:02d})" for c in chans)
         pwr = ", ".join(f"id(power_c{c:02d})" for c in chans)
+        lbl = ", ".join(f'"{label(c)}"' for c in chans)
         pages += f"""      - id: page_c{first:02d}
         lambda: |-
+          const char *lbl[] = {{{lbl}}};
           sensor::Sensor *cur[] = {{{cur}}};
           sensor::Sensor *pwr[] = {{{pwr}}};
           for (int i = 0; i < {len(chans)}; i++)
-            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", {first} + i, cur[i]->state, pwr[i]->state * 1000);
+            it.printf(0, i * 16, id(font_small), "%s %5.1fA %5.0fW", lbl[i], cur[i]->state, pwr[i]->state * 1000);
 """
     return f"""
 # Screen
@@ -353,7 +369,7 @@ sensor:
 
 """
     for c in range(1, size + 1):
-        s += f"  ###### Circuit C{c:02d} ######\n" + channel_sensors(c)
+        s += f"  ###### Circuit {label(c)} ######\n" + channel_sensors(c)
     s += totals(size) + settings(size) + display(size)
     return s
 

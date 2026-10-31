@@ -8,24 +8,25 @@ substitutions:
   hostname: 'PM'
   board_label: 'JLNTR2K4.MB'
   # Modify variables based on your circuit, like "breaker 01" or "dryer"
-  ct_clamp_01: 'C01'
-  ct_clamp_02: 'C02'
-  ct_clamp_03: 'C03'
-  ct_clamp_04: 'C04'
-  ct_clamp_05: 'C05'
-  ct_clamp_06: 'C06'
-  ct_clamp_07: 'C07'
-  ct_clamp_08: 'C08'
-  ct_clamp_09: 'C09'
-  ct_clamp_10: 'C10'
-  ct_clamp_11: 'C11'
-  ct_clamp_12: 'C12'
-  ct_clamp_13: 'C13'
-  ct_clamp_14: 'C14'
-  ct_clamp_15: 'C15'
-  ct_clamp_16: 'C16'
-  ct_clamp_17: 'C17'
-  ct_clamp_18: 'C18'
+  # A1-A2: main board, B0-B7: 1st extension board, C0-C7: 2nd, etc.
+  ct_clamp_a1: 'A1'
+  ct_clamp_a2: 'A2'
+  ct_clamp_b0: 'B0'
+  ct_clamp_b1: 'B1'
+  ct_clamp_b2: 'B2'
+  ct_clamp_b3: 'B3'
+  ct_clamp_b4: 'B4'
+  ct_clamp_b5: 'B5'
+  ct_clamp_b6: 'B6'
+  ct_clamp_b7: 'B7'
+  ct_clamp_c0: 'C0'
+  ct_clamp_c1: 'C1'
+  ct_clamp_c2: 'C2'
+  ct_clamp_c3: 'C3'
+  ct_clamp_c4: 'C4'
+  ct_clamp_c5: 'C5'
+  ct_clamp_c6: 'C6'
+  ct_clamp_c7: 'C7'
   # Modify variable based on your language
   measured_current: 'Measured Current'
   measured_power: 'Measured Power'
@@ -43,47 +44,47 @@ esphome:
   # One Home Assistant device per circuit (sensors + CT settings)
   devices:
     - id: dev_c01
-      name: "$hostname $ct_clamp_01"
+      name: "$hostname $ct_clamp_a1"
     - id: dev_c02
-      name: "$hostname $ct_clamp_02"
+      name: "$hostname $ct_clamp_a2"
     - id: dev_c03
-      name: "$hostname $ct_clamp_03"
+      name: "$hostname $ct_clamp_b0"
     - id: dev_c04
-      name: "$hostname $ct_clamp_04"
+      name: "$hostname $ct_clamp_b1"
     - id: dev_c05
-      name: "$hostname $ct_clamp_05"
+      name: "$hostname $ct_clamp_b2"
     - id: dev_c06
-      name: "$hostname $ct_clamp_06"
+      name: "$hostname $ct_clamp_b3"
     - id: dev_c07
-      name: "$hostname $ct_clamp_07"
+      name: "$hostname $ct_clamp_b4"
     - id: dev_c08
-      name: "$hostname $ct_clamp_08"
+      name: "$hostname $ct_clamp_b5"
     - id: dev_c09
-      name: "$hostname $ct_clamp_09"
+      name: "$hostname $ct_clamp_b6"
     - id: dev_c10
-      name: "$hostname $ct_clamp_10"
+      name: "$hostname $ct_clamp_b7"
     - id: dev_c11
-      name: "$hostname $ct_clamp_11"
+      name: "$hostname $ct_clamp_c0"
     - id: dev_c12
-      name: "$hostname $ct_clamp_12"
+      name: "$hostname $ct_clamp_c1"
     - id: dev_c13
-      name: "$hostname $ct_clamp_13"
+      name: "$hostname $ct_clamp_c2"
     - id: dev_c14
-      name: "$hostname $ct_clamp_14"
+      name: "$hostname $ct_clamp_c3"
     - id: dev_c15
-      name: "$hostname $ct_clamp_15"
+      name: "$hostname $ct_clamp_c4"
     - id: dev_c16
-      name: "$hostname $ct_clamp_16"
+      name: "$hostname $ct_clamp_c5"
     - id: dev_c17
-      name: "$hostname $ct_clamp_17"
+      name: "$hostname $ct_clamp_c6"
     - id: dev_c18
-      name: "$hostname $ct_clamp_18"
+      name: "$hostname $ct_clamp_c7"
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
   name_add_mac_suffix: true
   project:
     name: esphome.power-manager-multi
-    version: "8.0.0"
+    version: "8.1.0"
 
 esp32:
   board: wemos_d1_mini32
@@ -173,7 +174,7 @@ sensor:
       entity_category: diagnostic
       disabled_by_default: true
 
-  ###### Circuit C01 ######
+  ###### Circuit A1 ######
   - platform: adc
     pin: GPIO34
     id: adc_c01
@@ -222,7 +223,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C02 ######
+  ###### Circuit A2 ######
   - platform: adc
     pin: GPIO35
     id: adc_c02
@@ -271,7 +272,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C03 ######
+  ###### Circuit B0 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 0
@@ -320,7 +321,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C04 ######
+  ###### Circuit B1 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 1
@@ -369,7 +370,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C05 ######
+  ###### Circuit B2 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 2
@@ -418,7 +419,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C06 ######
+  ###### Circuit B3 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 3
@@ -467,7 +468,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C07 ######
+  ###### Circuit B4 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 4
@@ -516,7 +517,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C08 ######
+  ###### Circuit B5 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 5
@@ -565,7 +566,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C09 ######
+  ###### Circuit B6 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 6
@@ -614,7 +615,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C10 ######
+  ###### Circuit B7 ######
   - platform: mcp3008
     mcp3008_id: main_board_1
     number: 7
@@ -663,7 +664,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C11 ######
+  ###### Circuit C0 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 0
@@ -712,7 +713,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C12 ######
+  ###### Circuit C1 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 1
@@ -761,7 +762,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C13 ######
+  ###### Circuit C2 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 2
@@ -810,7 +811,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C14 ######
+  ###### Circuit C3 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 3
@@ -859,7 +860,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C15 ######
+  ###### Circuit C4 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 4
@@ -908,7 +909,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C16 ######
+  ###### Circuit C5 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 5
@@ -957,7 +958,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C17 ######
+  ###### Circuit C6 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 6
@@ -1006,7 +1007,7 @@ sensor:
     device_class: energy
     restore: true
 
-  ###### Circuit C18 ######
+  ###### Circuit C7 ######
   - platform: mcp3008
     mcp3008_id: main_board_2
     number: 7
@@ -1928,31 +1929,36 @@ display:
           it.printf(0, 48, id(font_small), "Tot %6.0f W", id(power_total).state * 1000);
       - id: page_c01
         lambda: |-
+          const char *lbl[] = {"A1", "A2", "B0", "B1"};
           sensor::Sensor *cur[] = {id(measured_current_c01), id(measured_current_c02), id(measured_current_c03), id(measured_current_c04)};
           sensor::Sensor *pwr[] = {id(power_c01), id(power_c02), id(power_c03), id(power_c04)};
           for (int i = 0; i < 4; i++)
-            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 1 + i, cur[i]->state, pwr[i]->state * 1000);
+            it.printf(0, i * 16, id(font_small), "%s %5.1fA %5.0fW", lbl[i], cur[i]->state, pwr[i]->state * 1000);
       - id: page_c05
         lambda: |-
+          const char *lbl[] = {"B2", "B3", "B4", "B5"};
           sensor::Sensor *cur[] = {id(measured_current_c05), id(measured_current_c06), id(measured_current_c07), id(measured_current_c08)};
           sensor::Sensor *pwr[] = {id(power_c05), id(power_c06), id(power_c07), id(power_c08)};
           for (int i = 0; i < 4; i++)
-            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 5 + i, cur[i]->state, pwr[i]->state * 1000);
+            it.printf(0, i * 16, id(font_small), "%s %5.1fA %5.0fW", lbl[i], cur[i]->state, pwr[i]->state * 1000);
       - id: page_c09
         lambda: |-
+          const char *lbl[] = {"B6", "B7", "C0", "C1"};
           sensor::Sensor *cur[] = {id(measured_current_c09), id(measured_current_c10), id(measured_current_c11), id(measured_current_c12)};
           sensor::Sensor *pwr[] = {id(power_c09), id(power_c10), id(power_c11), id(power_c12)};
           for (int i = 0; i < 4; i++)
-            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 9 + i, cur[i]->state, pwr[i]->state * 1000);
+            it.printf(0, i * 16, id(font_small), "%s %5.1fA %5.0fW", lbl[i], cur[i]->state, pwr[i]->state * 1000);
       - id: page_c13
         lambda: |-
+          const char *lbl[] = {"C2", "C3", "C4", "C5"};
           sensor::Sensor *cur[] = {id(measured_current_c13), id(measured_current_c14), id(measured_current_c15), id(measured_current_c16)};
           sensor::Sensor *pwr[] = {id(power_c13), id(power_c14), id(power_c15), id(power_c16)};
           for (int i = 0; i < 4; i++)
-            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 13 + i, cur[i]->state, pwr[i]->state * 1000);
+            it.printf(0, i * 16, id(font_small), "%s %5.1fA %5.0fW", lbl[i], cur[i]->state, pwr[i]->state * 1000);
       - id: page_c17
         lambda: |-
+          const char *lbl[] = {"C6", "C7"};
           sensor::Sensor *cur[] = {id(measured_current_c17), id(measured_current_c18)};
           sensor::Sensor *pwr[] = {id(power_c17), id(power_c18)};
           for (int i = 0; i < 2; i++)
-            it.printf(0, i * 16, id(font_small), "C%02d %5.1fA %5.0fW", 17 + i, cur[i]->state, pwr[i]->state * 1000);
+            it.printf(0, i * 16, id(font_small), "%s %5.1fA %5.0fW", lbl[i], cur[i]->state, pwr[i]->state * 1000);
