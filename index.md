@@ -23,8 +23,14 @@ Le **Power Manager multiboard** de [Catroniq](https://catroniq.com/2022/11/01/ge
 
 ## Installation
 
-1. Choisissez le nombre de circuits de votre montage : 2 pour la carte principale seule, puis 8 de plus par carte d'extension.
+1. Choisissez la langue des noms dans Home Assistant (français ou anglais), puis le nombre de circuits de votre montage : 2 pour la carte principale seule, puis 8 de plus par carte d'extension.
 2. Branchez la carte principale à votre ordinateur avec un câble USB et cliquez sur le bouton. Le firmware s'installe depuis votre navigateur, puis la page vous demande votre réseau Wi-Fi.
+
+<label for="lang"><strong>Langue dans Home Assistant :</strong></label>
+<select id="lang">
+  <option value="-fr" selected>Français</option>
+  <option value="">English</option>
+</select>
 
 <label for="size"><strong>Nombre de circuits :</strong></label>
 <select id="size">
@@ -37,11 +43,15 @@ Le **Power Manager multiboard** de [Catroniq](https://catroniq.com/2022/11/01/ge
 </select>
 
 <script type="module" src="https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-button.js?module"></script>
-<p><esp-web-install-button id="install" manifest="./power-manager-multi-10/manifest.json"></esp-web-install-button></p>
+<p><esp-web-install-button id="install" manifest="./power-manager-multi-10-fr/manifest.json"></esp-web-install-button></p>
 <script>
-  document.getElementById("size").addEventListener("change", function (e) {
-    document.getElementById("install").manifest = "./power-manager-multi-" + e.target.value + "/manifest.json";
-  });
+  function updateManifest() {
+    var size = document.getElementById("size").value;
+    var lang = document.getElementById("lang").value;
+    document.getElementById("install").manifest = "./power-manager-multi-" + size + lang + "/manifest.json";
+  }
+  document.getElementById("size").addEventListener("change", updateManifest);
+  document.getElementById("lang").addEventListener("change", updateManifest);
 </script>
 
 - Fonctionne avec **Chrome** ou **Edge** sur ordinateur (pas sur Firefox, Safari ni téléphone).
@@ -53,13 +63,15 @@ Une fois la carte connectée au Wi-Fi, Home Assistant la détecte automatiquemen
 
 ## Ajouter une carte d'extension
 
-Vous passez de 10 à 18 circuits ? Branchez la nouvelle carte d'extension, revenez sur cette page, choisissez le nouveau nombre de circuits et réinstallez par USB.
+Vous passez de 10 à 18 circuits ? Branchez la nouvelle carte d'extension, revenez sur cette page, choisissez le nouveau nombre de circuits (**dans la même langue**) et réinstallez par USB.
 
-**Vos réglages sont conservés** : les circuits déjà configurés gardent leur pince, leur tension, leur correction et leur historique dans Home Assistant. Seuls les nouveaux circuits apparaissent, désactivés (**None**).
+**Vos réglages sont conservés** : les circuits déjà configurés gardent leur pince, leur tension, leur correction et leur historique dans Home Assistant. Seuls les nouveaux circuits apparaissent, désactivés (**Aucune**).
 
 ## Mises à jour
 
 Quand une nouvelle version est publiée, Home Assistant affiche **Mise à jour disponible** dans **Paramètres → Mises à jour**. Cliquez sur **Installer** : la carte télécharge et installe le nouveau firmware par Wi-Fi, sans câble. La carte vérifie les mises à jour toutes les 6 heures.
+
+Les mises à jour gardent la langue choisie à l'installation. Pour changer de langue, réinstallez par USB : les noms changent, donc Home Assistant crée de nouvelles entités et les réglages des circuits sont à refaire.
 
 ## Configuration des pinces
 
@@ -74,34 +86,38 @@ Dans Home Assistant, chaque circuit apparaît comme un appareil séparé (**PM A
 | 4e carte d'extension | E0 à E7 |
 | 5e carte d'extension | F0 à F7 |
 
-Par défaut, tous les circuits sont à **None** (désactivés) pour éviter les valeurs au hasard sur les entrées sans pince. Pour chaque circuit utilisé, ouvrez son appareil dans Home Assistant, section **Configuration**, puis choisissez :
+Par défaut, tous les circuits sont à **Aucune** (None, désactivés) pour éviter les valeurs au hasard sur les entrées sans pince. Pour chaque circuit utilisé, ouvrez son appareil dans Home Assistant, section **Configuration**, puis choisissez :
 
 | Réglage | Valeurs | Description |
 |---|---|---|
-| CT Model | None, 5 A … 100 A | Calibre de la pince (inscrit sur la pince) |
-| CT Output | 1 V, 0.5 V, 0.333 V | Tension de sortie de la pince à pleine charge |
-| Circuit Voltage | 120 V, 240 V, 230 V | Tension du circuit (voir ci-dessous) |
-| CT Correction | 50 à 150 % | Ajustement fin, à comparer avec une pince ampèremétrique de référence |
+| Modèle de pince (CT Model) | Aucune, 5 A … 100 A | Calibre de la pince (inscrit sur la pince) |
+| Sortie de pince (CT Output) | 1 V, 0.5 V, 0.333 V | Tension de sortie de la pince à pleine charge |
+| Type de disjoncteur (Breaker Type) | Simple 120 V, Double 240 V, Simple 230 V | Disjoncteur simple ou double (voir ci-dessous) |
+| Correction de pince (CT Correction) | 50 à 150 % | Ajustement fin, à comparer avec une pince ampèremétrique de référence |
+| Numéro de disjoncteur (Breaker Number) | 0 à 80 | Numéro du disjoncteur dans le panneau (0 = non indiqué). Pour un double, entrez le premier : 29 donne « 29-31 » |
+| Note | texte, 32 caractères | Ce que le circuit alimente, par exemple « Laveuse à linge » |
 
 Les réglages sont conservés dans la carte, même après une panne de courant ou une mise à jour.
 
+Sur l'appareil de la carte, réglez aussi **Taille du panneau** (Panel Size) : le nombre de positions de votre panneau (1 à 80). Un numéro de disjoncteur plus grand que le panneau est refusé et remis à 0.
+
 Astuce : renommez l'appareil d'un circuit dans Home Assistant (par exemple « Sécheuse ») et toutes ses mesures suivent.
 
-### Quelle tension choisir ?
+### Disjoncteur simple ou double ?
 
-| Circuit | Pinces | Circuit Voltage |
+| Circuit | Pinces | Type de disjoncteur |
 |---|---|---|
-| Amérique du Nord, circuit 120 V (prises, éclairage) | 1 pince | 120 V |
-| Amérique du Nord, 240 V sans neutre (plinthes, chauffe-eau, thermopompe) | 1 pince sur **un seul** des deux fils | 240 V |
-| Amérique du Nord, 240 V avec neutre (sécheuse, cuisinière) | 1 pince : approximation correcte · 2 pinces (une par fil) : mesure exacte | 1 pince : 240 V · 2 pinces : 120 V chacune, puis additionner |
-| Entrée principale du panneau | 2 pinces, une par phase | 120 V chacune, puis additionner |
-| Europe (monophasé) | 1 pince | 230 V |
+| Amérique du Nord, circuit 120 V (prises, éclairage) | 1 pince | Simple 120 V |
+| Amérique du Nord, 240 V sans neutre (plinthes, chauffe-eau, thermopompe) | 1 pince sur **un seul** des deux fils | Double 240 V |
+| Amérique du Nord, 240 V avec neutre (sécheuse, cuisinière) | 1 pince : approximation correcte · 2 pinces (une par fil) : mesure exacte | 1 pince : Double 240 V · 2 pinces : Simple 120 V chacune, puis additionner |
+| Entrée principale du panneau | 2 pinces, une par phase | Simple 120 V chacune, puis additionner |
+| Europe (monophasé) | 1 pince | Simple 230 V |
 
 **Important :** ne refermez jamais une pince autour des deux fils d'un même circuit. Le courant circule en sens inverse dans chaque fil, les deux s'annulent et la pince lit 0.
 
 ## Utilisateurs d'ESPHome
 
-Vous pouvez aussi adopter la carte dans le tableau de bord ESPHome, ou copier le fichier YAML de votre nombre de circuits (`power-manager-multi-10.yaml`, etc.) depuis le [dépôt GitHub](https://github.com/djiesr/JLNTR2K4.MB-power-manager-multi).
+Vous pouvez aussi adopter la carte dans le tableau de bord ESPHome, ou copier le fichier YAML de votre nombre de circuits (`power-manager-multi-10-fr.yaml` en français, `power-manager-multi-10.yaml` en anglais, etc.) depuis le [dépôt GitHub](https://github.com/djiesr/JLNTR2K4.MB-power-manager-multi).
 
 ---
 

@@ -1,0 +1,24 @@
+{
+  "name": "esphome.power-manager-multi",
+  "version": "8.3.0",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "ota": {
+        "path": "power-manager-multi-10-fr-esp32.ota.bin",
+        "md5": "b60a75b4ad1cd32da5d94f9e4c44db96",
+        "sha256": "bde4c789fe2fbdc105b12e5eeb2fb878dd86ba1e00193bed8ea12bb12398bd59"
+      },
+      "parts": [
+        {
+          "path": "power-manager-multi-10-fr-esp32.factory.bin",
+          "offset": 0,
+          "md5": "78bfcdead35f6bef5280bde871134223",
+          "sha256": "46673a3c2a1984500286d49749d9ae897847b18e737149f4fb74071b614d2183"
+        }
+      ]
+    }
+  ]
+}
