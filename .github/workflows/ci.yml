@@ -28,6 +28,12 @@ jobs:
           - power-manager-multi-26.yaml
           - power-manager-multi-34.yaml
           - power-manager-multi-42.yaml
+          - power-manager-multi-02-fr.yaml
+          - power-manager-multi-10-fr.yaml
+          - power-manager-multi-18-fr.yaml
+          - power-manager-multi-26-fr.yaml
+          - power-manager-multi-34-fr.yaml
+          - power-manager-multi-42-fr.yaml
     steps:
       - name: Checkout source code
         uses: actions/checkout@v7.0.1

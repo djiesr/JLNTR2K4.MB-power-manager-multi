@@ -12,7 +12,7 @@ Assistant history when a board is moved from one size to a bigger one.
 
 from pathlib import Path
 
-VERSION = "8.2.0"
+VERSION = "8.3.0"
 REPO = "djiesr/JLNTR2K4.MB-power-manager-multi"
 PAGES_URL = "https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi"
 
@@ -21,11 +21,58 @@ ONBOARD_PINS = ["GPIO34", "GPIO35"]
 EXTENSION_CS_PINS = ["GPIO13", "GPIO15", "D8", "GPIO32", "GPIO33"]
 SIZES = [2 + 8 * n for n in range(len(EXTENSION_CS_PINS) + 1)]  # 2, 10, ..., 42
 
+# Electrical panel sizes (number of breaker positions)
+PANEL_SIZES = [1, 2, 4, 6, 8, 12, 16, 24, 30, 32, 40, 60, 80]
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def stem(size):
-    return f"power-manager-multi-{size:02d}"
+# Entity names per language. English keeps the original file names (and update
+# URLs) so boards installed before languages existed keep getting updates.
+# Changing a name gives new entities in Home Assistant: settings and history
+# start over, so only translate before a version is released.
+TEXTS = {
+    "en": {
+        "measured_current": "Measured Current",
+        "measured_power": "Measured Power",
+        "measured_total_power_daily": "Measured Daily Total",
+        "total_power": "Total Power",
+        "total_daily_energy": "Total Daily Energy",
+        "ct_model": "CT Model",
+        "ct_output": "CT Output",
+        "ct_none": "None",
+        "breaker_type": "Breaker Type",
+        "breaker_number": "Breaker Number",
+        "breaker": "Breaker",
+        "single": "Single",
+        "double": "Double",
+        "note": "Note",
+        "panel_size": "Panel Size",
+        "ct_correction": "CT Correction",
+    },
+    "fr": {
+        "measured_current": "Courant mesuré",
+        "measured_power": "Puissance mesurée",
+        "measured_total_power_daily": "Énergie du jour",
+        "total_power": "Puissance totale",
+        "total_daily_energy": "Énergie totale du jour",
+        "ct_model": "Modèle de pince",
+        "ct_output": "Sortie de pince",
+        "ct_none": "Aucune",
+        "breaker_type": "Type de disjoncteur",
+        "breaker_number": "Numéro de disjoncteur",
+        "breaker": "Disjoncteur",
+        "single": "Simple",
+        "double": "Double",
+        "note": "Note",
+        "panel_size": "Taille du panneau",
+        "ct_correction": "Correction de pince",
+    },
+}
+
+
+def stem(size, lang):
+    return f"power-manager-multi-{size:02d}" + ("" if lang == "en" else f"-{lang}")
 
 
 def label(c):
@@ -40,13 +87,14 @@ def label(c):
     return f"{chr(ord('B') + board)}{pin}"
 
 
-def header(size):
+def header(size, lang):
     labels = "".join(f"  ct_clamp_{label(c).lower()}: '{label(c)}'\n" for c in range(1, size + 1))
     devices = "".join(
         f'    - id: dev_c{c:02d}\n      name: "$hostname $ct_clamp_{label(c).lower()}"\n'
         for c in range(1, size + 1))
+    texts = "".join(f"  {k}: '{v}'" + chr(10) for k, v in TEXTS[lang].items())
     return f"""# GENERATED FILE - edit tools/generate.py and run it again.
-# Catroniq - Power Manager multiboard, {size} circuits
+# Catroniq - Power Manager multiboard, {size} circuits ({lang})
 
 # These substitutions allow the end user to override certain values
 substitutions:
@@ -57,17 +105,7 @@ substitutions:
   # Modify variables based on your circuit, like "breaker 01" or "dryer"
   # A1-A2: main board, B0-B7: 1st extension board, C0-C7: 2nd, etc.
 {labels}  # Modify variable based on your language
-  measured_current: 'Measured Current'
-  measured_power: 'Measured Power'
-  measured_total_power_daily: 'Measured Daily Total'
-  total_power: 'Total Power'
-  total_daily_energy: 'Total Daily Energy'
-  ct_model: 'CT Model'
-  ct_output: 'CT Output'
-  ct_none: 'None'
-  circuit_voltage: 'Circuit Voltage'
-  ct_correction: 'CT Correction'
-
+{texts}
 esphome:
   name: "${{name}}"
   # One Home Assistant device per circuit (sensors + CT settings)
@@ -100,11 +138,11 @@ http_request:
 update:
   - platform: http_request
     name: Firmware
-    source: {PAGES_URL}/{stem(size)}/manifest.json
+    source: {PAGES_URL}/{stem(size, lang)}/manifest.json
     update_interval: 6h
 
 dashboard_import:
-  package_import_url: github://{REPO}/{stem(size)}.yaml@main
+  package_import_url: github://{REPO}/{stem(size, lang)}.yaml@main
 
 wifi:
   ap:
@@ -214,7 +252,7 @@ def channel_sensors(c):
     lambda: |-
       if (id(measured_current_c{n}).state > 0.03) {{
         static const float VOLTS[] = {{120.0f, 240.0f, 230.0f}};
-        float volts = VOLTS[id(circuit_voltage_c{n}).active_index().value_or(0)];
+        float volts = VOLTS[id(breaker_type_c{n}).active_index().value_or(0)];
         return id(measured_current_c{n}).state * volts / 1000;
       }}
       return 0.0;
@@ -258,7 +296,7 @@ def totals(size):
 
 
 def settings(size):
-    selects, numbers = "", ""
+    selects, numbers, texts = "", "", ""
     for c in range(1, size + 1):
         n = f"{c:02d}"
         common = f"""    device_id: dev_c{n}
@@ -278,12 +316,14 @@ def settings(size):
 {common}    options: ["1 V", "0.5 V", "0.333 V"]
     initial_option: "1 V"
 
-  # 230 V is last: the select saves its index, keep existing choices valid
+  # The select saves its index: add new choices at the end
   - platform: template
-    id: circuit_voltage_c{n}
-    name: $circuit_voltage
-{common}    options: ["120 V", "240 V", "230 V"]
-    initial_option: "120 V"
+    id: breaker_type_c{n}
+    name: $breaker_type
+{common}    options: ["$single 120 V", "$double 240 V", "$single 230 V"]
+    initial_option: "$single 120 V"
+    on_value:
+      - component.update: breaker_label_c{n}
 
 """
         numbers += f"""  - platform: template
@@ -296,10 +336,69 @@ def settings(size):
     unit_of_measurement: "%"
     mode: box
 
+  - platform: template
+    id: breaker_c{n}
+    name: $breaker_number
+{common}    initial_value: 0
+    min_value: 0
+    max_value: {PANEL_SIZES[-1]}
+    step: 1
+    mode: box
+    on_value:
+      - lambda: |-
+          // A double breaker also takes the position 2 below (29 -> 29-31)
+          static const int PANEL[] = {{{", ".join(map(str, PANEL_SIZES))}}};
+          int panel = PANEL[id(panel_size).active_index().value_or({len(PANEL_SIZES) - 1})];
+          int last = (int) x + (id(breaker_type_c{n}).active_index().value_or(0) == 1 ? 2 : 0);
+          if (x > 0 && last > panel) {{
+            ESP_LOGW("breaker", "Breaker %d does not fit in a %d-position panel", (int) x, panel);
+            id(breaker_c{n}).make_call().set_value(0).perform();
+          }}
+      - component.update: breaker_label_c{n}
+
+"""
+        texts += f"""  - platform: template
+    id: note_c{n}
+    name: $note
+{common}    initial_value: ""
+    max_length: 32
+    mode: text
+
+"""
+    selects += f"""  # Size of the electrical panel: breaker numbers above it are refused
+  - platform: template
+    id: panel_size
+    name: $hostname $panel_size
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    options: [{", ".join(f'"{p}"' for p in PANEL_SIZES)}]
+    initial_option: "{PANEL_SIZES[-1]}"
+
 """
     return (
         "\n########################################################## CT Clamp configuration (editable in HA) ##########################################\n\n"
-        "select:\n" + selects + "number:\n" + numbers)
+        "select:\n" + selects + "number:\n" + numbers + "text:\n" + texts)
+
+
+def breaker_labels(size):
+    out = '\n  # Breaker position(s) in the panel, like "29" or "29-31"\n'
+    for c in range(1, size + 1):
+        n = f"{c:02d}"
+        out += f"""  - platform: template
+    id: breaker_label_c{n}
+    name: $breaker
+    device_id: dev_c{n}
+    icon: mdi:electric-switch
+    update_interval: 60s
+    lambda: |-
+      int n = (int) id(breaker_c{n}).state;
+      if (n <= 0) return std::string("-");
+      if (id(breaker_type_c{n}).active_index().value_or(0) == 1)
+        return std::to_string(n) + "-" + std::to_string(n + 2);
+      return std::to_string(n);
+"""
+    return out
 
 
 def display(size):
@@ -354,8 +453,8 @@ display:
 {pages}"""
 
 
-def build(size):
-    s = header(size) + hardware(size) + """
+def build(size, lang):
+    s = header(size, lang) + breaker_labels(size) + hardware(size) + """
 sensor:
   - platform: debug
     free:
@@ -375,7 +474,8 @@ sensor:
 
 
 if __name__ == "__main__":
-    for size in SIZES:
-        path = ROOT / f"{stem(size)}.yaml"
-        path.write_text(build(size), encoding="utf-8", newline="\n")
-        print(path.name)
+    for lang in TEXTS:
+        for size in SIZES:
+            path = ROOT / f"{stem(size, lang)}.yaml"
+            path.write_text(build(size, lang), encoding="utf-8", newline="\n")
+            print(path.name)

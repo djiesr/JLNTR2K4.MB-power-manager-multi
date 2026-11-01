@@ -15,6 +15,8 @@ Install page: https://djiesr.github.io/JLNTR2K4.MB-power-manager-multi/
 | `power-manager-multi-34.yaml` | 34 |
 | `power-manager-multi-42.yaml` | 42 (5 extension boards) |
 
+Each size also exists in French (`power-manager-multi-10-fr.yaml`, ...): same firmware, French entity names in Home Assistant. Translations are in `TEXTS` in the generator. English keeps the original file names so boards installed before languages existed keep getting updates.
+
 **These files are generated.** Edit `tools/generate.py`, then run:
 
 ```
@@ -25,4 +27,4 @@ Circuits are named after the connectors printed on the boards: A1-A2 on the main
 
 Every circuit is generated identically in every size (same ids, names and sub-device), so moving a board to a bigger size keeps the CT settings, daily totals and Home Assistant history of the existing circuits. Keep it that way when editing the generator.
 
-Pushing to `main` builds the six firmwares and publishes the install page on GitHub Pages. Devices check that page for updates every 6 hours; bump `VERSION` in `tools/generate.py` to publish an update.
+Pushing to `main` builds the twelve firmwares and publishes the install page on GitHub Pages. Devices check that page for updates every 6 hours; bump `VERSION` in `tools/generate.py` to publish an update.

@@ -22,6 +22,12 @@ jobs:
         power-manager-multi-26.yaml
         power-manager-multi-34.yaml
         power-manager-multi-42.yaml
+        power-manager-multi-02-fr.yaml
+        power-manager-multi-10-fr.yaml
+        power-manager-multi-18-fr.yaml
+        power-manager-multi-26-fr.yaml
+        power-manager-multi-34-fr.yaml
+        power-manager-multi-42-fr.yaml
       # All sizes share esphome.name, so name the firmware after the file
       name-from-file: true
 
@@ -49,7 +55,7 @@ jobs:
           set -euo pipefail
           mkdir -p site
           cp -r static/. site/
-          # One folder (and manifest) per size: site/power-manager-multi-XX/
+          # One folder (and manifest) per firmware: site/power-manager-multi-XX[-fr]/
           for dir in firmware/*/; do
             size=$(basename "$dir")
             mkdir -p "site/$size"
